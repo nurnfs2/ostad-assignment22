@@ -36,6 +36,35 @@ class CustomerController extends Controller
     }
 
 
+    public function edit(Customer $customer)
+    {
+        return view('customers.edit', compact('customer'));
+    }
+
+
+    public function update(Request $request, Customer $customer)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:customers,email,' . $customer->id,
+            'contact_number' => 'nullable',
+            // Add other validation rules for additional fields if needed.
+        ]);
+
+        $customer->update($request->all());
+
+        return redirect()->route('customers.index')->with('success', 'Customer updated successfully!');
+    }
+
+    public function destroy(Customer $customer)
+    {
+        $customer->delete();
+
+        return redirect()->route('customers.index')->with('success', 'Customer deleted successfully!');
+    }
+
+
+
 
     public function sendPromotionalEmail(Request $request, Customer $customer)
     {
